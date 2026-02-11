@@ -1,3 +1,5 @@
+// dashboard function it is
+
 function dashboard(req,res,next){
     res.json({
         message: "Welcome",
