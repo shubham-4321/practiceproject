@@ -2,9 +2,15 @@ const express = require("express");
 const jwt = require("jsonwebtoken")
 const app = express();
 const port = 3000;
-const protected = require("./routes/router")
-
+const protected = require("./routes/router");
+const { getUser } = require("./controller/controllers");
+const router = require("./routes/router");
 app.use(express.json());
+
+const SECRET_KEY = "secretkey1234"
+const expiry = {
+    expiresIn: "24h"
+}
 
 function generateToken(userData){
     const token = jwt.sign({userData},SECRET_KEY,expiry);
@@ -26,11 +32,6 @@ app.post("/login",(req,res)=>{
     })
 })
 
-const SECRET_KEY = "secretkey1234"
-
-const expiry = {
-    expiresIn: "24h"
-}
 
 // const verification = require("./middleware/authJwt")
 // // app.get("/protected",verification,(req,res)=>{
@@ -40,7 +41,7 @@ const expiry = {
 // app.get("/protected",verification,dashboard)
 
 
-app.use("/",protected)
+app.use("/",router);
 
 app.listen(port,()=>{
     console.log(`Server running on port ${port}`);
