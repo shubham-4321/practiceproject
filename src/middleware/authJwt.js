@@ -13,9 +13,8 @@ function verification(req,res,next){
         token = header.split(" ")[1];
     }
 
-    const SECRET_KEY = "secretkey1234"
     try{
-        const decoded = jwt.verify(token,SECRET_KEY);
+        const decoded = jwt.verify(token,process.env.JWT_SECRET);
         req.user = decoded
         next()
     }
