@@ -1,3 +1,5 @@
+const User = require("../models/user")
+
 function dashboard(req,res,next){
     res.json({
         message: "Welcome",
@@ -5,9 +7,9 @@ function dashboard(req,res,next){
     })
 }
 
-function getUser(req,res){
+async function getUser(req,res){
     const id = req.params.id;
-    const user = req.user.userData.find(u=>u.id === id)
+    const user = await User.findById(id)
     if(user){
         res.json(user);
     }

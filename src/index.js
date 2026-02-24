@@ -7,7 +7,6 @@ require('dotenv').config();
 // console.log('MONGO_URI:', process.env.MONGO_URI);
 // console.log('JWT_SECRET:', process.env.JWT_SECRET);
 const app = express();
-const protected = require("./routes/router");
 const { getUser } = require("./controller/controllers");
 const router = require("./routes/router");
 const User = require("./models/user")
@@ -17,25 +16,25 @@ connectDb()
 
 app.use(express.json());
 
-function generateToken(userData) {
-    const token = jwt.sign({ userData }, process.env.JWT_SECRET, {expiresIn: "24h"});
-    return token
-}
+// function generateToken(userData) {
+//     const token = jwt.sign({ userData }, process.env.JWT_SECRET, {expiresIn: "24h"});
+//     return token
+// }
 
-app.post("/test", (req, res) => {
-    res.json({
-        message: "Data received",
-        data: req.body
-    })
-});
+// app.post("/test", (req, res) => {
+//     res.json({
+//         message: "Data received",
+//         data: req.body
+//     })
+// });
 
-app.post("/login", (req, res) => {
-    const token = generateToken(req.body);
-    res.json({
-        message: "Token generated",
-        token: token
-    })
-})
+// app.post("/login", (req, res) => {
+//     const token = generateToken(req.body);
+//     res.json({
+//         message: "Token generated",
+//         token: token
+//     })
+// })
 
 
 // const verification = require("./middleware/authJwt")
