@@ -21,4 +21,20 @@ async function getUser(req,res){
     }
 }
 
-module.exports = {dashboard, getUser}
+async function updateOne(req,res){
+    try{
+        const id = req.params.id;
+        await User.updateOne(
+            {_id : id},
+            {
+                $set : req.body,
+                $unset : {age : ""}
+            }
+        )
+        res.json({message: "user updated"})
+    }catch(error){
+        res.json({message: "error updating user"})
+    }
+}
+
+module.exports = {dashboard, getUser, updateOne}
