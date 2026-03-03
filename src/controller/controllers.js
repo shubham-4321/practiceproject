@@ -1,4 +1,5 @@
 const User = require("../models/user")
+const bcrypt = require("bcryptjs")
 
 function dashboard(req,res,next){
     res.json({
@@ -23,14 +24,19 @@ async function getUser(req,res){
 
 async function updateOne(req,res){
     try{
-        const id = req.params.id;
-        await User.updateOne(
-            {_id : id},
-            {
-                $set : req.body,
-                $unset : {age : ""}
+        const update = { $set: {}, $unset: {}}
+        for(const key in req.body){
+            if(req.body[key] === null){
+                update.$unset[key] = ""
             }
-        )
+            else{
+                if(key === "password"){
+                    req.body[key] = await bcrypt.hash(req.body[key], 10)
+                }
+                update.$set[key] = req.body[key]
+            }
+        }
+        await User.updateOne({_id: req.params.id}, update)
         res.json({message: "user updated"})
     }catch(error){
         res.json({message: "error updating user"})
