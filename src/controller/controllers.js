@@ -9,8 +9,8 @@ function dashboard(req,res,next){
 }
 
 async function getUser(req,res){
-    const id = req.params.id;
-    const user = await User.findById(id)
+    const id = req.user.id;
+    const user = await User.findById(id).select("-password")
     if(req.user.id != id){
         return res.status(403).json({message: "access denied"})
     }
@@ -43,4 +43,31 @@ async function updateOne(req,res){
     }
 }
 
-module.exports = {dashboard, getUser, updateOne}
+async function changePassword(req,res) {
+    try{
+        const id = req.user.id;
+        const user = await User.findById(id);
+        if(!user){
+            return res.status(404).json({message : "User doesn't exist"})
+        }
+        const oldPassword = req.body.oldPassword;
+        const newPassword = req.body.newPassword;
+        if(oldPassword === newPassword){
+            return res.status(400).json({message : "Old and New passwords must be different"})
+        }
+        const match = await bcrypt.compare(oldPassword,user.password);
+        if(match){
+            const hashedPassword = await bcrypt.hash(req.body.newPassword,10);
+            user.password = hashedPassword;
+            await user.save()
+            return res.status(200).json({message : "Password changed successfully"})
+        }
+        else{
+            return res.status(400).json({message : "Old password doen't match"})
+        }
+    }catch(error){
+        return res.status(500).json({message : "Error changing password"})
+    }
+}
+
+module.exports = {dashboard, getUser, updateOne, changePassword}
