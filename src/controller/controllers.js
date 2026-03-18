@@ -70,4 +70,19 @@ async function changePassword(req,res) {
     }
 }
 
-module.exports = {dashboard, getUser, updateOne, changePassword}
+async function deleteUser(req,res) {
+    try{
+        const id =  req.user.id;
+        const user = await User.findById(id);
+        if(!user){
+            return res.status(404).json({message : "User doesn't exist"})
+        }
+        await User.deleteOne({_id : id});
+        return res.status(200).json({message : "User deleted successfully"})
+    }
+    catch(error){
+        return res.status(500).json({message : "Error deleting user"})
+    }
+}
+
+module.exports = {dashboard, getUser, updateOne, changePassword, deleteUser}
